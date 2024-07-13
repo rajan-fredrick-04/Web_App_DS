@@ -7,14 +7,28 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-        <img src="/frontend/images/logo_draft-removebg-preview.png" alt="">
+        <img src="/frontend/images/LOGO.png" alt="">
         <div class="container">
-            <form clas=="form" action="">
+            <form class="form" action="">
+                
                 <div class="input-box">
-                    <label for="">Email</label>
-                    <input type="text" name="" id="" placeholder="Enter your email...">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required placeholder="Enter your username...">
                 </div>
-                <button >Submit</button>
+                <div class="input-box">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email...">
+                </div>
+                <div class="input-box">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password...">
+                </div>
+                <div class="input-box">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required placeholder="Confirm your password...">
+                </div>
+                
+                <button>Submit</button>
             </form>
         </div> 
     <div class="footer">

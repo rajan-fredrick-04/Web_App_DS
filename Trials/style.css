@@ -20,19 +20,19 @@ h1{
 }
 
 img{
-    height: 100px;
-    width: 100px;
+    height: 180px;
+    width: 180px;
+    margin-top: 20px;
 }
 
 .container{
+    margin-top: -30px;
     position: relative;
     display:flex;
     max-width: 450px;
     width: 100%;
     padding: 1rem;
     border-radius: 40px;
-    background-color: #707070;
-    opacity: 0.5;
     flex-direction: column;
     justify-content: center;
     align-items:center ;
@@ -42,23 +42,35 @@ img{
     width: 100%;
     margin-top: 20px;
 }
-input[type=text]{
+input{
     position: relative;
     height: 50px;
     width: 100%;
     outline: none;
     font-size: 1rem;
-    color:#707070;
+    color:#f6f1f1;
     margin-top: 8px;
     border: 1px solid #ddd;
     border-radius: 20px;
     padding: 0 15px;
 }
-
+.input-box select{
+    width: calc(100%);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;   
+}
+.input-box label{
+    color: rgb(251, 248, 248);
+    text-align: center;
+    padding-left: 10px;
+}
 button{
     font-size: 1rem;
     margin-top: 20px;
+    margin-left: 100px;
     height: 50px;
+    width:200px;
     border: 2px goldenrod thick;
     border-radius: 8px;
     background-color: goldenrod;
