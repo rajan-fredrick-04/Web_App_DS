@@ -1,0 +1,15 @@
+For all of us the repository has been initilaized via git desktop
+
+When working on project the following commands must be used:
+1. git add . - add all files to the repository
+    -> Command - git add --all(To add all)/git add <file>/git add <directory>
+2. git commit -m "message" - commit all files to the repository
+    -> Command - git commit -m "message"
+3. git push - push all files to the repository
+    -> Command - git push -u origin main
+4. git pull - pull all the files from the repository
+    ->Command - git pull origin main
+
+Note:
+Whenever you have done some changes and you are about to add the changes,
+First you have to use git pull command and then this flow add->commit->push.
