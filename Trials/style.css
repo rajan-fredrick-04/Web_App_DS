@@ -19,7 +19,9 @@ h1{
     color: #ddd;
 }
 
+
 img{
+
     height: 180px;
     width: 180px;
     margin-top: 20px;
@@ -39,19 +41,20 @@ img{
 }
 
 .input-box{
-    width: 100%;
+    width: 80%;
     margin-top: 20px;
+    
 }
 input{
     position: relative;
-    height: 50px;
+    height: 40px;
     width: 100%;
     outline: none;
     font-size: 1rem;
     color:#f6f1f1;
     margin-top: 8px;
     border: 1px solid #ddd;
-    border-radius: 20px;
+    border-radius: 10px;
     padding: 0 15px;
 }
 .input-box select{
@@ -67,13 +70,59 @@ input{
 }
 button{
     font-size: 1rem;
-    margin-top: 20px;
-    margin-left: 100px;
+    margin-top: 30px;
+    margin-left: 75px;
+    margin-bottom: 30PX;
     height: 50px;
     width:200px;
     border: 2px goldenrod thick;
     border-radius: 8px;
     background-color: goldenrod;
+}
+
+.footer{
+    background: #232f3e;
+    
+    border: 1px solid #232f3e;
+    margin-left: 0;
+    width: 100%;
+
+
+}
+.footer-content{
+
+    font-size: 15px;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    column-gap: 60px;
+    margin-left: 40%;
+    margin-top: 30px;
+}
+.footer-content1{
+
+font-size: 15px;
+color: #fff;
+text-align: center;
+display: flex;
+column-gap: 60px;
+margin-left: 35%;
+margin-top: 30px;
+margin-bottom: 20PX;
+}
+
+.footer-content i{
+    font-size: 1.5rem;
+}
+.footer-content2{
+font-size: 8px;
+color: #fff;
+text-align: center;
+display: flex;
+column-gap: 60px;
+margin-left: 47%;
+margin-top: 20px;
+margin-bottom: 50px;
 }
 
 
