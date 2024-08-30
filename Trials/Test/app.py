@@ -1,3 +1,4 @@
+import base64
 from flask import Flask,render_template,redirect,request,flash,url_for,Response,jsonify
 import psycopg2
 from psycopg2 import OperationalError 
@@ -10,6 +11,7 @@ import time
 from collections import Counter
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
+import numpy as np
 
 
 load_dotenv()
@@ -188,9 +190,24 @@ def predict():
     emotion = predict_emotion(text)
     return jsonify({'emotion': emotion})
 
-@app.route("/text")
-def text():
-    return render_template("emotional_analysis.html")
+@app.route("/emotion",methods=["GET","POST"])
+def emotion():
+    if request.method == 'POST':
+        image_data = request.form['image']
+        
+        # Decode the image from base64
+        image_data = image_data.split(',')[1]  # Remove the base64 header
+        image_data = base64.b64decode(image_data)
+        nparr = np.frombuffer(image_data, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        
+        # Analyze the image
+        result = DeepFace.analyze(img, actions=['emotion'], enforce_detection=False)
+        dominant_emotion = result[0]['dominant_emotion'] if 'dominant_emotion' in result[0] else 'No emotion detected'
+        
+        return render_template('emotional_analysis.html', emotion=dominant_emotion)
+    
+    return render_template('emotional_analysis.html', emotion=None)
 
 if __name__=='__main__':
     app.run(debug=True)

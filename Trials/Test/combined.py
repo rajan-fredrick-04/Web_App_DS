@@ -69,7 +69,8 @@ text_emotion = predict_emotion(text_input)
 combined_emotions = [face_emotion, text_emotion]
 final_emotion = Counter(combined_emotions).most_common(1)[0][0]
 
-print(f"Final detected emotion: {final_emotion}")import cv2
+print(f"Final detected emotion: {final_emotion}")
+import cv2
 from deepface import DeepFace
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
