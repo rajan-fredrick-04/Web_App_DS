@@ -63,44 +63,16 @@
               and your answers will remain anonymous.
             </p>
             <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+              <form id="emotionForm">
               <label class="flex flex-col min-w-40 flex-1">
-                <textarea
+                <textarea id="userInput" name="userInput"
                   placeholder="How are you feeling today?"
                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#686831] bg-[#343418] focus:border-[#686831] min-h-36 placeholder:text-[#cbcb90] p-[15px] text-base font-normal leading-normal"
                 ></textarea>
               </label>
-            </div>
-            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label class="flex flex-col min-w-40 flex-1">
-                <textarea
-                  placeholder="What's on your mind?"
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#686831] bg-[#343418] focus:border-[#686831] min-h-36 placeholder:text-[#cbcb90] p-[15px] text-base font-normal leading-normal"
-                ></textarea>
-              </label>
-            </div>
-            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label class="flex flex-col min-w-40 flex-1">
-                <textarea
-                  placeholder="What would you like us to know? (optional)"
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#686831] bg-[#343418] focus:border-[#686831] min-h-36 placeholder:text-[#cbcb90] p-[15px] text-base font-normal leading-normal"
-                ></textarea>
-              </label>
-            </div>
-            <div class="flex px-4 py-3 justify-end">
-              <form action="1_recommends_page.html">
-              <button
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#FAC638] text-[#232310] gap-2 pl-4 text-sm font-bold leading-normal tracking-[0.015em]"
-              >
-                <div class="text-[#232310]" data-icon="ArrowRight" data-size="20px" data-weight="regular">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                    <path
-                      d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"
-                    ></path>
-                  </svg>
-                </div>
-                <span class="truncate">Submit</span>
-              </button>
+              <input type="submit" value="Submit">
               </form>
+              <h2>Your Emotion: <span id="emotionResult"></span></h2>
             </div>
           </div>
         </div>
@@ -117,6 +89,22 @@
             // Process the captured photo file
             console.log('Photo captured:', file);
           }
+        });
+        document.getElementById('emotionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const userInput = document.getElementById('userInput').value;
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: userInput })
+            });
+
+            const result = await response.json();
+            document.getElementById('emotionResult').innerText = result.emotion;
         });
       </script>
   </body>

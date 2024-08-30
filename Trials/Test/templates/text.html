@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Detection</title>
+</head>
+<body>
+    <h1>How are you feeling today?</h1>
+    <form id="emotionForm">
+        <textarea id="userInput" name="userInput" rows="5" cols="40" placeholder="Describe your feelings..."></textarea><br><br>
+        <input type="submit" value="Submit">
+    </form>
+    <h2>Your Emotion: <span id="emotionResult"></span></h2>
+
+    <script>
+        document.getElementById('emotionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const userInput = document.getElementById('userInput').value;
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: userInput })
+            });
+
+            const result = await response.json();
+            document.getElementById('emotionResult').innerText = result.emotion;
+        });
+    </script>
+</body>
+</html>

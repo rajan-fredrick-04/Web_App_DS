@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Detection</title>
+</head>
+<style>
+      .container {
+            display: flex;
+            align-items: center;
+        }
+        .emotion {
+            margin-left: 20px;
+        }
+</style>
+<body>
+    <h1>Live Emotion Detection</h1>
+    <div class="container">
+        <img src="{{ url_for('video') }}" width="640" height="480" alt="Video Stream">
+        <h1 id="emotion" class="emotion"></h1>
+    </div>
+
+    <script>
+        const emotionElement = document.getElementById('emotion');
+
+        async function fetchEmotion() {
+            const response = await fetch('/get_emotion');
+            const data = await response.json();
+            emotionElement.textContent = data.emotion;
+        }
+
+        setInterval(fetchEmotion, 1000); 
+    </script>
+</body>
+</html>
