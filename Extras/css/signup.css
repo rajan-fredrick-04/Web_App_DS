@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+*{
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body{
+    margin: 0;
+    min-height: 100vh;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: center;
+
+    overflow: hidden;
+}
+h1{
+    color: #ddd;
+    text-align: center;
+    margin-top: 20px;
+}
+
+
+img{
+
+    height: 150px;
+    width: 150px;
+    margin-top: 20px;
+    align-items: center;
+}
+
+.container{
+    margin-top: -30px;
+    position: relative;
+    display:flex;
+    max-width: 350px;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 40px;
+    justify-content: center;
+    align-items:center ;
+    
+    margin-left: 10px;
+    
+    
+}
+
+.input-box{
+    width: 100%;
+    margin-top: 20px;
+    
+}
+input{
+    position: relative;
+    height: 35px;
+    width: 100%;
+    outline: none;
+    font-size: 1rem;
+    color:#f6f1f1;
+    margin-top: 8px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 0 15px;
+}
+.input-box select{
+    width: calc(100%);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;   
+}
+.input-box label{
+    color: rgb(251, 248, 248);
+    text-align: center;
+    padding-left: 10px;
+}
+button{
+    font-size: 1rem;
+    margin-top: 30px;
+    margin-left: 60px;
+    margin-bottom: 30PX;
+    height: 50px;
+    width:200px;
+    border: 2px goldenrod thick;
+    border-radius: 8px;
+    background-color: goldenrod;
+    text-align: center;
+    justify-content: center;
+}
+.form{
+    align-items: center;
+    justify-content: center;
+    
+}
+.footer{
+    background-color: black;
+    border: 1px solid black;
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    
+    
+
+}
+.footer-content{
+
+    font-size: 15px;
+    color: goldenrod;
+    text-align: center;
+    display: flex;
+    column-gap: 60px;
+    justify-content: center;
+    margin-top: 65px;
+}
+.footer-content1{
+
+font-size: 15px;
+color: goldenrod;
+text-align: center;
+display: flex;
+column-gap: 60px;
+justify-content: center;
+margin-top: 30px;
+margin-bottom: 20PX;
+}
+
+.footer-content i{
+    font-size: 1.5rem;
+}
+.footer-content2{
+font-size: 8px;
+color: goldenrod;
+text-align: center;
+display: flex;
+column-gap: 60px;
+margin-left: 47%;
+margin-top: 20px;
+margin-bottom: 50px;
+}
+
+

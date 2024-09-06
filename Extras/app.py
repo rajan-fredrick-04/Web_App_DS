@@ -91,7 +91,7 @@ def login():
                     stored_password = result[0]
                     if check_password_hash(stored_password, password):
                         # Password is correct, log the user in
-                        return redirect(url_for("content"))  # Redirect to a home or dashboard page
+                        return redirect(url_for("emotion"))  # Redirect to a home or dashboard page
                     else:
                         flash('Invalid email or password', 'danger')
         except OperationalError as e:
@@ -102,13 +102,6 @@ def login():
             connection.close()
 
     return render_template('login.html')
-
-@app.route("/content")
-def content():
-    return render_template('contents.html')
-
-
-
 
 def generate_frames():
     global current_emotion
@@ -159,13 +152,13 @@ def generate_frames():
 def get_emotion():
     return jsonify({'emotion': current_emotion})
 
-@app.route('/')
+@app.route('/home')
 def index():
     return render_template('index.html')
 
-@app.route('/video')
-def video():
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+#@app.route('/video')
+#def video():
+   # return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 tokenizer = AutoTokenizer.from_pretrained("j-hartmann/emotion-english-distilroberta-base")
 model = AutoModelForSequenceClassification.from_pretrained("j-hartmann/emotion-english-distilroberta-base")
@@ -208,6 +201,42 @@ def emotion():
         return render_template('emotional_analysis.html', emotion=dominant_emotion)
     
     return render_template('emotional_analysis.html', emotion=None)
+
+
+
+def dynamic_weighted_average_emotion(face_emotion, text_emotion, face_confidence, text_confidence):
+    # Define emotion scores
+    emotion_scores = {
+        "happy": 3,
+        "neutral": 2,
+        "sad": 1,
+        "angry": 0
+    }
+    
+    # Get the numerical score for both face and text emotions
+    face_score = emotion_scores.get(face_emotion, 2)  # Default to 'neutral'
+    text_score = emotion_scores.get(text_emotion, 2)  # Default to 'neutral'
+    
+    # Calculate dynamic weights based on confidence scores
+    total_confidence = face_confidence + text_confidence
+    face_weight = face_confidence / total_confidence
+    text_weight = text_confidence / total_confidence
+    
+    # Calculate the weighted average score
+    weighted_average = (face_weight * face_score) + (text_weight * text_score)
+    
+    # Reverse mapping from scores back to emotions
+    score_to_emotion = {v: k for k, v in emotion_scores.items()}
+    
+    # Round to the nearest score and get the corresponding emotion
+    final_emotion = score_to_emotion.get(round(weighted_average), "neutral")
+    
+    return final_emotion
+
+
+@app.route("/recommends")
+def recommendation():
+    return render_template('1_recommends_page.html')
 
 if __name__=='__main__':
     app.run(debug=True)

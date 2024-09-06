@@ -4,45 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <link rel="stylesheet" href="../static/css/signup.css">
+    <link rel="stylesheet" href="css/signup.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     
 </head>
 <body>
-        <img src="../static/images/LOGO.png" alt="">
+        <img src="/frontend/images/LOGO.png" alt="">
         <div class="container">
             
-            <form action="/login" method="post">
+            <form class="form" action="">
                 <h1>Login</h1>
                 <div class="input-box">
-                    <label for="email">Email</label>
-                    <input type="email" id="username" name="email" required placeholder="Enter your mail..." style="font-size: small;">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required placeholder="Enter your username..." style="font-size: small;">
                 </div>
                 <div class="input-box">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" required placeholder="Enter your password..."style="font-size: small;">
                 </div>
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div style="color:white" class="alert alert-{{ category }}">{{ message }}</div>
-                    {% endfor %}
-                    <script>
-                        // Wait 2 seconds and then redirect to the specified URL
-                        setTimeout(function(){
-                            window.location.href = "{{ redirect_url }}";
-                        }, 2000);
-                    </script>
-                {% endif %}
-            {% endwith %}
+                
                 <button>Submit</button>
-                <div style="text-align: center;">
-                    <span style="display: flex; justify-content: center; color: white; margin-left: 30px; font-size: small;">
-                        Don't have an account ? &nbsp;&nbsp; 
-                        <a href="{{url_for('register')}}" style="color: white;"> Signup for Feelix</a>
-                      </span>
-                </div>
             </form>
         </div> 
    
