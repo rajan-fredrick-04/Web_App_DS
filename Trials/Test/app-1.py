@@ -11,6 +11,7 @@ from utils.camera_utils import generate_frames
 from utils.db_utils import create_connection
 from utils.emotion_analysis import predict_emotion, dynamic_weighted_average_emotion
 from utils.auth_utils import register_user, login_user
+from utils.profile_utils import fetch_data
 
 load_dotenv()
 
@@ -82,6 +83,17 @@ def predict():
 @app.route("/recommends")
 def recommendation():
     return render_template('1_recommends_page.html')
+
+@app.route("/profile-view")
+def pofile_view():
+    return fetch_data()
+@app.route("/profile-edit",methods=["GET","POST"])
+def profile_edit():
+    if request.method=="POST":
+        name=request.form["name"]
+        dob=request.form["dob"]
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

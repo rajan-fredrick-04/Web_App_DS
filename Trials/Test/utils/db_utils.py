@@ -1,6 +1,9 @@
 import psycopg2
 from psycopg2 import OperationalError
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def create_connection():
     try:
