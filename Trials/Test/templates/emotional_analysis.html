@@ -83,35 +83,46 @@
       </div>
     </div>
     <script>
-      const video = document.getElementById('video');
-      const canvas = document.getElementById('canvas');
-      const context = canvas.getContext('2d');
-      const imageInput = document.getElementById('imageData');
-      const textInput = document.getElementById('textInput');
-      const snapButton = document.getElementById('snap');
+     const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const context = canvas.getContext('2d');
+  const imageInput = document.getElementById('imageData');
+  const textInput = document.getElementById('textInput');
+  const snapButton = document.getElementById('snap');
 
-      // Access the device's camera
-      if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true })
-          .then(function (stream) {
-            video.srcObject = stream;
-          })
-          .catch(function (err) {
-            console.log("Something went wrong!");
-          });
-      }
+  let stream;  // Variable to store the stream object
 
-      // Capture the photo
-      snapButton.addEventListener('click', function () {
-        context.drawImage(video, 0, 0, 640, 480);
-        const dataURL = canvas.toDataURL('image/png');
-        imageInput.value = dataURL;
-
-        const userText = document.getElementById('userInput').value;
-        textInput.value = userText;
-
-        document.getElementById('photoForm').submit();
+  // Access the device's camera
+  if (navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function (cameraStream) {
+        stream = cameraStream;  // Save the stream
+        video.srcObject = stream;
+      })
+      .catch(function (err) {
+        console.log("Something went wrong!", err);
       });
+  }
+
+  // Function to stop the camera stream
+  function stopCamera() {
+    const tracks = stream.getTracks();  // Get all tracks from the stream
+    tracks.forEach(track => track.stop());  // Stop all tracks (video, audio)
+  }
+
+  // Capture the photo
+  snapButton.addEventListener('click', function () {
+    context.drawImage(video, 0, 0, 640, 480);  // Capture image on canvas
+    const dataURL = canvas.toDataURL('image/png');  // Convert canvas to dataURL (base64)
+    imageInput.value = dataURL;  // Set the hidden input with the image data
+
+    const userText = document.getElementById('userInput').value;  // Get the user's text input
+    textInput.value = userText;  // Set the hidden text input field
+
+    stopCamera();  // Turn off the camera after capturing the photo
+
+    document.getElementById('photoForm').submit();  // Submit the form
+  });
     </script>
   </body>
 </html>
