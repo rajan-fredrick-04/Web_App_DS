@@ -3,13 +3,331 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>FEELIX Editable User Profile</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --primary-color: #FFD700;
+            --bg-color: #121212;
+            --text-color: #ffffff;
+            --card-bg: #1E1E1E;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: none;
+            color: var(--text-color);
+            height: 1200px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-header {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            padding: 40px;
+            text-align: center;
+        }
+
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid var(--text-color);
+            margin: 0 auto 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-pic input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .profile-name {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--bg-color);
+            margin-bottom: 5px;
+        }
+
+        .profile-info {
+            font-size: 18px;
+            color: var(--bg-color);
+            opacity: 0.8;
+        }
+
+        .profile-body {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 3px;
+            background-color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .preferences {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .preference {
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .preference:hover {
+            transform: scale(1.05);
+        }
+
+        .bio {
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            transition: 20s;
+        }
+        
+        .edit-mode input[type="text"],
+        .edit-mode input[type="email"],
+        .edit-mode input[type="number"],
+        .edit-mode select,
+        .edit-mode textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background-color: #FFA500;
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                padding: 30px;
+            }
+            .profile-pic {
+                width: 120px;
+                height: 120px;
+            }
+            .profile-name {
+                font-size: 28px;
+            }
+            .profile-body {
+                padding: 30px;
+            }
+        }
+        option{
+            color: #121212;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{name}}</h1>
-    <h1>{{email}}</h1>
-    <h1>{{age}}</h1>
-    <h1>{{gender}}</h1>
-    <h1>{{preferences}}</h1>
+    <video id="bg-video" autoplay muted loop>
+        <source src="../static/bg_video3.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-pic">
+                    <img src="/api/placeholder/150/150" alt="Profile Picture" id="profile-image">
+                    <input title="file_up" type="file" id="profile-pic-upload" accept="image/*" disabled>
+                </div>
+                <h1 class="profile-name" id="username-display">{{ name }}</h1>
+                <p class="profile-info" id="age-gender-display">{{ age }} years old • {{ gender }}</p>
+            </div>
+            <div class="profile-body">
+                <div class="section">
+                    <h2 class="section-title">Personal Information</h2>
+                    <div id="personal-info">
+                        <p><strong>Email:</strong> <span id="email-display">{{ email }}</span></p>
+                        <p><strong>Age:</strong> <span id="age-display">{{ age }}</span></p>
+                        <p><strong>Gender:</strong> <span id="gender-display">{{ gender }}</span></p>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">Preferences</h2>
+                    <div class="preferences" id="preferences-display">
+                        {% for preference in preferences.split(',') %}
+                            <span class="preference">{{ preference }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2 class="section-title">About Me</h2>
+                    <p class="bio" id="bio-display">
+                        Enthusiastic explorer and music lover. Always up for new adventures! I believe in living life to the fullest and capturing beautiful moments through my camera lens.
+                    </p>
+                </div>
+
+                <div class="button-container">
+                    <button class="btn" id="update-profile-btn">Update Profile</button>
+                    <button class="btn" id="save-profile-btn" style="display: none;">Save Profile</button>
+                    <button class="btn" id="dashboard-btn">Dashboard</button>
+                    <button class="btn" id="feedback-btn">Feedback</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Increase video speed by setting playbackRate
+        const video = document.getElementById('bg-video');
+        video.playbackRate = 1.5; // This doubles the speed. Adjust the number as needed (1 = normal speed).
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const updateProfileBtn = document.getElementById('update-profile-btn');
+            const saveProfileBtn = document.getElementById('save-profile-btn');
+            const profileCard = document.querySelector('.profile-card');
+            const profilePicUpload = document.getElementById('profile-pic-upload');
+
+            updateProfileBtn.addEventListener('click', () => {
+                profileCard.classList.add('edit-mode');
+                updateProfileBtn.style.display = 'none';
+                saveProfileBtn.style.display = 'inline-block';
+                profilePicUpload.disabled = false;
+
+                // Replace displays with editable inputs
+                document.getElementById('username-display').innerHTML = `<input type="text" id="username-input" value="{{ name }}">`;
+                document.getElementById('email-display').innerHTML = `<input type="email" id="email-input" value="{{ email }}">`;
+                document.getElementById('age-display').innerHTML = `<input type="number" id="age-input" value="{{ age }}">`;
+                document.getElementById('gender-display').innerHTML = `
+                    <select id="gender-input">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>`;
+                document.getElementById('preferences-display').innerHTML = 
+                    `<input type="text" id="preferences-input" value="{{ preferences }}">`;
+                document.getElementById('bio-display').innerHTML = 
+                    `<textarea id="bio-input" rows="4">Enthusiastic explorer and music lover. Always up for new adventures! I believe in living life to the fullest and capturing beautiful moments through my camera lens.</textarea>`;
+            });
+
+            saveProfileBtn.addEventListener('click', () => {
+                profileCard.classList.remove('edit-mode');
+                updateProfileBtn.style.display = 'inline-block';
+                saveProfileBtn.style.display = 'none';
+                profilePicUpload.disabled = true;
+
+                // Update displays with new values
+                document.getElementById('username-display').textContent = document.getElementById('username-input').value;
+                document.getElementById('email-display').textContent = document.getElementById('email-input').value;
+                document.getElementById('age-display').textContent = document.getElementById('age-input').value;
+                document.getElementById('gender-display').textContent = document.getElementById('gender-input').value;
+                document.getElementById('age-gender-display').textContent = `${document.getElementById('age-input').value} years old • ${document.getElementById('gender-input').value}`;
+
+                const preferencesArray = document.getElementById('preferences-input').value.split(',').map(pref => pref.trim());
+                document.getElementById('preferences-display').innerHTML = preferencesArray.map(pref => `<span class="preference">${pref}</span>`).join('');
+
+                document.getElementById('bio-display').textContent = document.getElementById('bio-input').value;
+            });
+
+            profilePicUpload.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        document.getElementById('profile-image').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Placeholder functions for Dashboard and Feedback buttons
+            document.getElementById('dashboard-btn').addEventListener('click', () => {
+                alert('Navigating to Dashboard');
+            });
+
+            document.getElementById('feedback-btn').addEventListener('click', () => {
+                alert('Navigating to Feedback page');
+            });
+        });
+    </script>
 </body>
 </html>

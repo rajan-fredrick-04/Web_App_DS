@@ -71,7 +71,8 @@ def emotion():
                                    final_emotion=final_emotion,
                                    text_emotion=text_emotion,
                                    face_emotion=face_emotion,
-                                   user=user_id)  # Pass user_id for displaying it in the template
+                                   user=user_id,
+                                   redirect=True)  # Pass user_id for displaying it in the template
         
         # For GET requests, render the template without analysis results
         return render_template('emotional_analysis.html', 
@@ -94,7 +95,7 @@ def predict():
     return jsonify({'emotion': emotion})
 
 
-@app.route("/recommends")
+@app.route("/recommendation")
 def recommendation():
     return render_template('1_recommends_page.html')
 

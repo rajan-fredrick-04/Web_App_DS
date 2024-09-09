@@ -10,10 +10,8 @@
       onload="this.rel='stylesheet'"
       href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope%3Awght%40400%3B500%3B700%3B800&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
     />
-
     <title>Emotional Analysis</title>
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
-
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   </head>
   <body>
@@ -36,43 +34,39 @@
                     ></path>
                   </svg>
                 </div>
-                <span class="truncate">Take a photo</span>
+                <span class="truncate">Analyze</span>
               </button>
             </div>
             <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
-          <form id="photoForm" action="{{ url_for('emotion') }}" method="post" enctype="multipart/form-data" style="display:none;">
-          <input type="hidden" name="image" id="imageData">
-          <input type="hidden" name="text_input" id="textInput"> <!-- For text input -->
-          <input type="submit" value="Analyze Photo">
-          </form>
+
+            <!-- Hidden form for image and text data submission -->
+            <form id="photoForm" action="{{ url_for('emotion') }}" method="post" enctype="multipart/form-data" style="display:none;">
+              <input type="hidden" name="image" id="imageData">
+              <input type="hidden" name="text_input" id="textInput"> <!-- For text input -->
+            </form>
+
             <div class="flex flex-col items-center px-4 py-3">
-              <button style="margin-top: 5px;padding: 10px 20px;background-color: rgb(238, 190, 45);border-radius: 6px;"
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 flex-1 bg-[#494922] text-white text-sm font-bold leading-normal tracking-[0.015em]"
-              >
-              <div class="text-[#232310]" data-icon="Camera" data-size="20px" data-weight="regular">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                  <path
-                    d="M208,56H180.28L166.65,35.56A8,8,0,0,0,160,32H96a8,8,0,0,0-6.65,3.56L75.71,56H48A24,24,0,0,0,24,80V192a24,24,0,0,0,24,24H208a24,24,0,0,0,24-24V80A24,24,0,0,0,208,56Zm8,136a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H80a8,8,0,0,0,6.66-3.56L100.28,48h55.43l13.63,20.44A8,8,0,0,0,176,72h32a8,8,0,0,1,8,8ZM128,88a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,88Zm0,72a28,28,0,1,1,28-28A28,28,0,0,1,128,160Z"
-                  ></path>
-                </svg>
-              </div>
-                <span style="color: black;" class="truncate">Submit</span>
-              </button>
+              <!-- Display the analyzed emotions -->
               <h1 style="color:rgb(238, 190, 45); font-size: 1.5rem;">Final Emotion: <span id="finalEmotion">{{ final_emotion }}</span></h1>
               <h2 style="color:rgb(238, 190, 45); font-size: 1.2rem;">Text Emotion: <span id="textEmotion">{{ text_emotion }}</span></h2>
               <h2 style="color:rgb(238, 190, 45); font-size: 1.2rem;">Face Emotion: <span id="faceEmotion">{{ face_emotion }}</span></h2>
             </div>
           </div>
+
+          <!-- Additional content area -->
           <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div class="flex flex-wrap justify-between gap-3 p-4"><p class="text-white tracking-light text-[32px] font-bold leading-tight min-w-72">Be mindful</p></div>
+            <div class="flex flex-wrap justify-between gap-3 p-4">
+              <p class="text-white tracking-light text-[32px] font-bold leading-tight min-w-72">Be mindful</p>
+            </div>
             <p class="text-white text-base font-normal leading-normal pb-3 pt-1 px-4">
               We'd like to learn more about you and how you feel. Your feedback will help us improve our product and provide you with a better experience. This survey is optional
               and your answers will remain anonymous.
             </p>
+
+            <!-- User input for text emotion analysis -->
             <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <form id="emotionForm">
               <label class="flex flex-col min-w-40 flex-1">
-                <textarea id="userInput"  rows="10" cols="300" name="userInput"
+                <textarea id="userInput" rows="10" cols="300" name="userInput"
                   placeholder="How are you feeling today?"
                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#686831] bg-[#343418] focus:border-[#686831] min-h-36 placeholder:text-[#cbcb90] p-[15px] text-base font-normal leading-normal"
                 ></textarea>
@@ -82,47 +76,55 @@
         </div>
       </div>
     </div>
+
+    <!-- JavaScript to handle camera and form submission -->
     <script>
-     const video = document.getElementById('video');
-  const canvas = document.getElementById('canvas');
-  const context = canvas.getContext('2d');
-  const imageInput = document.getElementById('imageData');
-  const textInput = document.getElementById('textInput');
-  const snapButton = document.getElementById('snap');
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      const context = canvas.getContext('2d');
+      const imageInput = document.getElementById('imageData');
+      const textInput = document.getElementById('textInput');
+      const snapButton = document.getElementById('snap');
+      let stream;
 
-  let stream;  // Variable to store the stream object
+      // Access the device's camera
+      if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(function (cameraStream) {
+            stream = cameraStream;
+            video.srcObject = stream;
+          })
+          .catch(function (err) {
+            console.log("Something went wrong!", err);
+          });
+      }
 
-  // Access the device's camera
-  if (navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(function (cameraStream) {
-        stream = cameraStream;  // Save the stream
-        video.srcObject = stream;
-      })
-      .catch(function (err) {
-        console.log("Something went wrong!", err);
+      // Function to stop the camera stream
+      function stopCamera() {
+        const tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+
+      // Capture the photo
+      snapButton.addEventListener('click', function () {
+        context.drawImage(video, 0, 0, 640, 480);
+        const dataURL = canvas.toDataURL('image/png');
+        imageInput.value = dataURL;  // Set hidden input with image data
+
+        const userText = document.getElementById('userInput').value;
+        textInput.value = userText;  // Set hidden input with text data
+
+        stopCamera();  // Stop the camera after capturing the photo
+        document.getElementById('photoForm').submit();  // Submit the form
       });
-  }
-
-  // Function to stop the camera stream
-  function stopCamera() {
-    const tracks = stream.getTracks();  // Get all tracks from the stream
-    tracks.forEach(track => track.stop());  // Stop all tracks (video, audio)
-  }
-
-  // Capture the photo
-  snapButton.addEventListener('click', function () {
-    context.drawImage(video, 0, 0, 640, 480);  // Capture image on canvas
-    const dataURL = canvas.toDataURL('image/png');  // Convert canvas to dataURL (base64)
-    imageInput.value = dataURL;  // Set the hidden input with the image data
-
-    const userText = document.getElementById('userInput').value;  // Get the user's text input
-    textInput.value = userText;  // Set the hidden text input field
-
-    stopCamera();  // Turn off the camera after capturing the photo
-
-    document.getElementById('photoForm').submit();  // Submit the form
-  });
+      const redirect = "{{ redirect }}"
+      const finalEmotion="{{final_emotion}}"
+    if (redirect) {
+      setTimeout(() => {
+        // Redirect to the recommends route after 5 seconds and pass the final emotion
+        window.location.href = "{{ url_for('recommendation') }}?emotion=" + finalEmotion;
+      }, 5000);  // 5 second delay for the user to see the results
+    }
     </script>
   </body>
 </html>

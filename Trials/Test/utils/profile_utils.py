@@ -1,28 +1,44 @@
-from flask import render_template, flash, redirect, url_for,request
+from flask import render_template, flash, redirect, url_for,request,session
 from psycopg2 import OperationalError
 from utils.db_utils import create_connection
 
 def fetch_data():
-    email="jane@gmail.com"
     try:
-        conn,cursor=create_connection()
+        # Retrieve the user_id from session
+        user_id = session.get('user_id')
+        
+        if not user_id:
+            flash('Please log in to view your profile.', 'warning')
+            return redirect(url_for('login'))  # Redirect to login if no user_id in session
+
+        conn, cursor = create_connection()
+        
         if conn and cursor:
-            cursor.execute(''' SELECT username,email,age,gender,preferences FROM public."User_log" WHERE email=%s''',(email,))
-            result=cursor.fetchone()
+            # Query to fetch user details using user_id from session
+            cursor.execute(''' SELECT username, email, age, gender, preferences 
+                               FROM public."User_log" WHERE user_id = %s''', (user_id,))
+            result = cursor.fetchone()
+
             if result:
-                (user_name, user_email, user_age, user_gender, user_pref) = result
+                user_name, user_email, user_age, user_gender, user_pref = result
             else:
                 flash('No user data found.', 'warning')
                 return redirect(url_for("recommends"))
+        else:
+            flash('Failed to connect to the database.', 'danger')
+            return redirect(url_for("recommends"))
+
     except OperationalError as e:
         flash('Technical error occurred. Please try again later.', 'danger')
         print(f"Database error: {e}")
         return redirect(url_for("recommends"))
+
     finally:
         if cursor is not None:
             cursor.close()
         if conn is not None:
             conn.close()
+
     return render_template("profile_view.html",
                            name=user_name,
                            email=user_email,
