@@ -1,30 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
-    <link
-      rel="stylesheet"
-      as="style"
-      onload="this.rel='stylesheet'"
-      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope%3Awght%40400%3B500%3B700%3B800&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
-    />
-    <title>Emotional Analysis</title>
-    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  </head>
-  <body>
-    <div class="relative flex size-full min-h-screen flex-col bg-[#232310] dark group/design-root overflow-x-hidden" style='font-family: Manrope, "Noto Sans", sans-serif;'>
-      <div class="layout-container flex h-full grow flex-col">
-        <div class="gap-1 px-6 flex flex-1 justify-center py-5">
-          <div class="layout-content-container flex flex-col w-80">
-            <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Emotion Analysis</h3>
-            <div class="flex flex-col items-center px-4 py-3">
-              <video id="video" width="640" height="480" autoplay></video>
-              <br>
-              <br>
-              <button id="snap" style="margin-top: 10px;padding: 10px 15px;background-color: rgb(238, 190, 45);border-radius: 6px;"
+    <title>Emotion Analysis</title>
+    <style>
+        body, html {
+            font-family: Arial, sans-serif;
+            background-color: none;
+            color: white;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        .video-background {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+        }
+        .content {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .card {
+            background-color: rgba(62, 62, 62, 0.7); /* Adjust transparency */
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(255, 217, 0, 0.605);
+           
+        }
+        .card h2 {
+            font-size: 1.5rem;
+            margin-top: 0;
+        }
+        video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background-color: #FFD700;
+            color: black;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        button:hover {
+            background-color: #FFC000;
+        }
+        button svg {
+            margin-right: 5px;
+        }
+        textarea {
+            width: 100%;
+            background-color: #4E4E4E;
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        .emotion-results {
+            margin-top: 2rem;
+        }
+        .emotion-results h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <video autoplay muted loop class="video-background">
+        <source src="../static/bg_video3.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="content">
+        <div class="container">
+            <h1>Emotion Analysis</h1>
+            <div class="grid">
+                <div class="card">
+                    <video id="video" width="640" height="480" autoplay></video>
+                    <div class="button-group">
+                        <button id="snap" style="margin-top: 10px;padding: 10px 15px;background-color: rgb(238, 190, 45);border-radius: 6px;"
                 class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 flex-1 bg-[#FAC638] text-[#232310] gap-2 pl-4 text-sm font-bold leading-normal tracking-[0.015em]"
               >
                 <div class="text-[#232310]" data-icon="Camera" data-size="20px" data-weight="regular">
@@ -35,96 +130,78 @@
                   </svg>
                 </div>
                 <span class="truncate">Analyze</span>
-              </button>
-            </div>
-            <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
-
-            <!-- Hidden form for image and text data submission -->
-            <form id="photoForm" action="{{ url_for('emotion') }}" method="post" enctype="multipart/form-data" style="display:none;">
-              <input type="hidden" name="image" id="imageData">
-              <input type="hidden" name="text_input" id="textInput"> <!-- For text input -->
-            </form>
-
-            <div class="flex flex-col items-center px-4 py-3">
-              <!-- Display the analyzed emotions -->
-              <h1 style="color:rgb(238, 190, 45); font-size: 1.5rem;">Final Emotion: <span id="finalEmotion">{{ final_emotion }}</span></h1>
-              <h2 style="color:rgb(238, 190, 45); font-size: 1.2rem;">Text Emotion: <span id="textEmotion">{{ text_emotion }}</span></h2>
-              <h2 style="color:rgb(238, 190, 45); font-size: 1.2rem;">Face Emotion: <span id="faceEmotion">{{ face_emotion }}</span></h2>
-            </div>
-          </div>
-
-          <!-- Additional content area -->
-          <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div class="flex flex-wrap justify-between gap-3 p-4">
-              <p class="text-white tracking-light text-[32px] font-bold leading-tight min-w-72">Be mindful</p>
-            </div>
-            <p class="text-white text-base font-normal leading-normal pb-3 pt-1 px-4">
-              We'd like to learn more about you and how you feel. Your feedback will help us improve our product and provide you with a better experience. This survey is optional
-              and your answers will remain anonymous.
-            </p>
-
-            <!-- User input for text emotion analysis -->
-            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label class="flex flex-col min-w-40 flex-1">
-                <textarea id="userInput" rows="10" cols="300" name="userInput"
+                </button>
+                </div>
+                <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+                </div>
+                <form id="photoForm" action="{{ url_for('emotion') }}" method="post" enctype="multipart/form-data" style="display:none;">
+                    <input type="hidden" name="image" id="imageData">
+                    <input type="hidden" name="text_input" id="textInput"> <!-- For text input -->
+                </form>
+                <div class="card">
+                    <h2>Be mindful</h2>
+                    <p>We'd like to learn more about you and how you feel. Your feedback will help us improve our product and provide you with a better experience. This survey is optional and your answers will remain anonymous.</p>
+                    <textarea id="userInput" name="userInput "
                   placeholder="How are you feeling today?"
                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#686831] bg-[#343418] focus:border-[#686831] min-h-36 placeholder:text-[#cbcb90] p-[15px] text-base font-normal leading-normal"
-                ></textarea>
-              </label>
+                style="width: 500px;"></textarea>
+                </div>
             </div>
-          </div>
+        
+            <div class="emotion-results">
+                <h3>Face Emotion: <span id="finalEmotion">{{ final_emotion }}</span></h3>
+                <h3>Text Emotion: <span id="textEmotion">{{ text_emotion }}</span></h3>
+                <h3>Final Emotion: <span id="faceEmotion">{{ face_emotion }}</span></h3>
+            </div>
         </div>
-      </div>
     </div>
-
-    <!-- JavaScript to handle camera and form submission -->
     <script>
-      const video = document.getElementById('video');
-      const canvas = document.getElementById('canvas');
-      const context = canvas.getContext('2d');
-      const imageInput = document.getElementById('imageData');
-      const textInput = document.getElementById('textInput');
-      const snapButton = document.getElementById('snap');
-      let stream;
-
-      // Access the device's camera
-      if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true })
-          .then(function (cameraStream) {
-            stream = cameraStream;
-            video.srcObject = stream;
-          })
-          .catch(function (err) {
-            console.log("Something went wrong!", err);
-          });
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const imageInput = document.getElementById('imageData');
+        const textInput = document.getElementById('textInput');
+        const snapButton = document.getElementById('snap');
+        let stream;
+  
+        // Access the device's camera
+        if (navigator.mediaDevices.getUserMedia) {
+          navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (cameraStream) {
+              stream = cameraStream;
+              video.srcObject = stream;
+            })
+            .catch(function (err) {
+              console.log("Something went wrong!", err);
+            });
+        }
+  
+        // Function to stop the camera stream
+        function stopCamera() {
+          const tracks = stream.getTracks();
+          tracks.forEach(track => track.stop());
+        }
+  
+        // Capture the photo
+        snapButton.addEventListener('click', function () {
+          context.drawImage(video, 0, 0, 640, 480);
+          const dataURL = canvas.toDataURL('image/png');
+          imageInput.value = dataURL;  // Set hidden input with image data
+  
+          const userText = document.getElementById('userInput').value;
+          textInput.value = userText;  // Set hidden input with text data
+  
+          stopCamera();  // Stop the camera after capturing the photo
+          document.getElementById('photoForm').submit();  // Submit the form
+        });
+        const redirect = "{{ redirect }}"
+        const finalEmotion="{{final_emotion}}"
+      if (redirect) {
+        setTimeout(() => {
+          // Redirect to the recommends route after 5 seconds and pass the final emotion
+          window.location.href = "{{ url_for('recommendation') }}?emotion=" + finalEmotion;
+        }, 5000);  // 5 second delay for the user to see the results
       }
-
-      // Function to stop the camera stream
-      function stopCamera() {
-        const tracks = stream.getTracks();
-        tracks.forEach(track => track.stop());
-      }
-
-      // Capture the photo
-      snapButton.addEventListener('click', function () {
-        context.drawImage(video, 0, 0, 640, 480);
-        const dataURL = canvas.toDataURL('image/png');
-        imageInput.value = dataURL;  // Set hidden input with image data
-
-        const userText = document.getElementById('userInput').value;
-        textInput.value = userText;  // Set hidden input with text data
-
-        stopCamera();  // Stop the camera after capturing the photo
-        document.getElementById('photoForm').submit();  // Submit the form
-      });
-      const redirect = "{{ redirect }}"
-      const finalEmotion="{{final_emotion}}"
-    if (redirect) {
-      setTimeout(() => {
-        // Redirect to the recommends route after 5 seconds and pass the final emotion
-        window.location.href = "{{ url_for('recommendation') }}?emotion=" + finalEmotion;
-      }, 5000);  // 5 second delay for the user to see the results
-    }
-    </script>
-  </body>
+      </script>
+</body>
 </html>

@@ -90,6 +90,8 @@ def update_profile():
             conn.close()
 
     return redirect(url_for("profile_view"))
+
+
 def update_profile():
     if 'user_id' not in session:
         flash('Not Logged in!!', 'error')

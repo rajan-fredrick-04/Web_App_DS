@@ -13,6 +13,7 @@ from utils.db_utils import create_connection
 from utils.emotion_analysis import predict_emotion, dynamic_weighted_average_emotion,analyze_image_emotion,analyze_text_emotion,save_emotion_data
 from utils.auth_utils import register_user, login_user,forgot_pwd,verify,reset_pwd
 from utils.profile_utils import fetch_data
+from utils.feedback_util import update_feedback
 
 load_dotenv()
 
@@ -99,20 +100,14 @@ def predict():
 def recommendation():
     return render_template('1_recommends_page.html')
 
-@app.route("/profile-view")
-def pofile_view():
+@app.route("/profile_view")
+def profile_view():
     return fetch_data()
 
 
-@app.route("/profile-edit",methods=["GET","POST"])
-def profile_edit():
-    if request.method=="POST":
-        name=request.form["name"]
-        dob=request.form["dob"]
-
-@app.route("/feedback")
+@app.route("/feedback", methods=['GET','POST'])
 def feedback():
-    return render_template("feedback.html")
+    return update_feedback()
 
 
 if __name__ == '__main__':

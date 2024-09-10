@@ -176,12 +176,12 @@
 </head>
 <body>
     <video autoplay muted loop>
-        <source src="bg_video1.mp4" type="video/mp4">
+        <source src="../static/bg_video1.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
     <div class="container">
         <h1>Your Feedback Matters: Let Us Know How We're Doing!</h1>
-        <form class="feedback-form" id="feedbackForm">
+        <form action="/feedback" method="post" class="feedback-form" id="feedbackForm">
             <div class="input-group">
                 <textarea id="feedback1" name="feedback1" placeholder=" " required></textarea>
                 <label for="feedback1">What do you like most about FEELIX?</label>
@@ -196,7 +196,15 @@
             </div>
             <button type="submit">Submit Feedback</button>
         </form>
-        <div class="feedback-sent" id="feedbackSent">Thank you for your feedback!</div>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <ul class="flashes">
+        {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
     </div>
     <footer>
         <div class="social-icons">
@@ -212,11 +220,243 @@
             Copyright © 2024 FEELIX, Feelings in Focus
         </div>
     </footer>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FEELIX Feedback</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --primary-color: #FFD700;
+            --bg-color: #000000;
+            --text-color: #ffffff;
+        }
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            margin-left: 1100px;
+            margin-top: 40px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+
+        .feedback-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        textarea {
+            width: 90%;
+            margin-left: 13px;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        label {
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            padding: 0 0.5rem;
+            color: #999;
+            cursor: text;
+            transition: all 0.3s ease;
+            background-color: none;
+            pointer-events: none;
+        }
+
+        textarea:focus + label,
+        textarea:not(:placeholder-shown) + label {
+            top: -0.5rem;
+            left: 0.5rem;
+            font-size: 1rem;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+        }
+
+        button {
+            padding: 1rem 2rem;
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: center;
+        }
+
+        button:hover {
+            background-color: #FFE566;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .feedback-sent {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        footer {
+            background-color: none;
+            padding: 1rem 0;
+            text-align: center;
+            transition: opacity 0.5s ease;
+            margin-top: 20px;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-icons a {
+            color: black;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #ffea00;
+        }
+
+        .copyright {
+            font-size: 1rem;
+            color: black;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            textarea, button {
+                font-size: 0.9rem;
+            }
+            .social-icons {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</head>
+<body>
+    <video autoplay muted loop>
+        <source src="../static/bg_video1.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="container">
+        <h1>Your Feedback Matters: Let Us Know How We're Doing!</h1>
+        <form action="/feedback" method="post" class="feedback-form" id="feedbackForm">
+            <div class="input-group">
+                <textarea id="feedback1" name="feedback1" placeholder=" " required></textarea>
+                <label for="feedback1">What do you like most about FEELIX?</label>
+            </div>
+            <div class="input-group">
+                <textarea id="feedback2" name="feedback2" placeholder=" " required></textarea>
+                <label for="feedback2">How can we improve your experience?</label>
+            </div>
+            <div class="input-group">
+                <textarea id="feedback3" name="feedback3" placeholder=" " required></textarea>
+                <label for="feedback3">Any additional comments or suggestions?</label>
+            </div>
+            <button type="submit">Submit Feedback</button>
+        </form>
+        
+        <div id="feedbackSent" class="feedback-sent">
+            Thank you for your feedback! Redirecting...
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <footer>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-whatsapp"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fas fa-print"></i></a>
+        </div>
+        <div class="copyright">
+            Copyright © 2024 FEELIX, Feelings in Focus
+        </div>
+    </footer>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('feedbackForm');
             const feedbackSent = document.getElementById('feedbackSent');
-
+    
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
@@ -228,14 +468,16 @@
                     feedbackSent.style.opacity = '1';
                 }, 500);
                 
-                // Reset form (in a real app, you'd send this data to a server)
+                // Reset form and redirect after 5 seconds
                 setTimeout(() => {
                     form.reset();
                     form.style.opacity = '1';
                     form.style.height = 'auto';
                     form.style.overflow = 'visible';
                     feedbackSent.style.opacity = '0';
-                }, 3000);
+
+                    // Redirect after 5 seconds
+                }, 5000);
             });
 
             // Add dynamic label animation
@@ -251,6 +493,6 @@
                 });
             });
         });
-    </script>
+    </script>    
 </body>
 </html>
