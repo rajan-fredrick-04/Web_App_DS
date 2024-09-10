@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for,request,session
+from flask import render_template, flash, redirect, url_for,request,session,jsonify
 from psycopg2 import OperationalError
 from utils.db_utils import create_connection
 
@@ -90,7 +90,57 @@ def update_profile():
             conn.close()
 
     return redirect(url_for("profile_view"))
+def update_profile():
+    if 'user_id' not in session:
+        flash('Not Logged in!!', 'error')
+        return redirect(url_for('login'))
 
+    user_id = session['user_id']  # Get the user_id from the session
+    data = request.get_json()  # Get the JSON data sent from the frontend
+    new_name = data.get('username')
+    new_age = data.get('age')
+    new_gender = data.get('gender')
+    new_pref = data.get('preferences')
+    new_bio = data.get('bio')  # Assuming you're adding bio to the database
+    
+    try:
+        conn, cursor = create_connection()
+        if conn and cursor:
+            update_fields = []
+            params = []
+            if new_name:
+                update_fields.append("username = %s")
+                params.append(new_name)
+            if new_age:
+                update_fields.append("age = %s")
+                params.append(new_age)
+            if new_gender:
+                update_fields.append("gender = %s")
+                params.append(new_gender)
+            if new_pref:
+                update_fields.append("preferences = %s")
+                params.append(new_pref)
+            if new_bio:
+                update_fields.append("bio = %s")
+                params.append(new_bio)
+
+            params.append(user_id)
+            query = f'''UPDATE public."User_log" SET {", ".join(update_fields)} WHERE user_id=%s'''
+            cursor.execute(query, tuple(params))
+            conn.commit()
+            flash('Profile updated successfully!', 'success')
+        else:
+            flash('No changes made to the profile.', 'info')
+
+    except Exception as e:
+        flash(f'Technical error occurred: {str(e)}', 'danger')
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return redirect(url_for('profile_view'))
 
 
 

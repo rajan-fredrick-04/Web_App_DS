@@ -244,7 +244,15 @@
                         Enthusiastic explorer and music lover. Always up for new adventures! I believe in living life to the fullest and capturing beautiful moments through my camera lens.
                     </p>
                 </div>
-
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div id="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
                 <div class="button-container">
                     <button class="btn" id="update-profile-btn">Update Profile</button>
                     <button class="btn" id="save-profile-btn" style="display: none;">Save Profile</button>
@@ -290,24 +298,41 @@
             });
 
             saveProfileBtn.addEventListener('click', () => {
-                profileCard.classList.remove('edit-mode');
-                updateProfileBtn.style.display = 'inline-block';
-                saveProfileBtn.style.display = 'none';
-                profilePicUpload.disabled = true;
+            profileCard.classList.remove('edit-mode');
+            updateProfileBtn.style.display = 'inline-block';
+            saveProfileBtn.style.display = 'none';
+            profilePicUpload.disabled = true;
 
-                // Update displays with new values
-                document.getElementById('username-display').textContent = document.getElementById('username-input').value;
-                document.getElementById('email-display').textContent = document.getElementById('email-input').value;
-                document.getElementById('age-display').textContent = document.getElementById('age-input').value;
-                document.getElementById('gender-display').textContent = document.getElementById('gender-input').value;
-                document.getElementById('age-gender-display').textContent = `${document.getElementById('age-input').value} years old • ${document.getElementById('gender-input').value}`;
+    // Capture updated values
+            const updatedData = {
+            username: document.getElementById('username-input').value,
+            email: document.getElementById('email-input').value,
+            age: document.getElementById('age-input').value,
+            gender: document.getElementById('gender-input').value,
+            preferences: document.getElementById('preferences-input').value,
+            bio: document.getElementById('bio-input').value
+            };
 
-                const preferencesArray = document.getElementById('preferences-input').value.split(',').map(pref => pref.trim());
-                document.getElementById('preferences-display').innerHTML = preferencesArray.map(pref => `<span class="preference">${pref}</span>`).join('');
-
-                document.getElementById('bio-display').textContent = document.getElementById('bio-input').value;
-            });
-
+    // Send data to the backend using Fetch API
+            fetch('/update_profile', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedData)
+            })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Profile updated successfully!');
+            // Optionally reload the page to reflect the changes
+                location.reload();
+            } else {
+                alert('Error updating profile: ' + data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+        });
             profilePicUpload.addEventListener('change', (event) => {
                 const file = event.target.files[0];
                 if (file) {
@@ -327,6 +352,14 @@
             document.getElementById('feedback-btn').addEventListener('click', () => {
                 alert('Navigating to Feedback page');
             });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const flashMessages = document.getElementById('flash-messages');
+            if (flashMessages) {
+                setTimeout(function () {
+                    window.location.reload();  // Refresh the page
+                }, 3000);  // Change this delay as needed
+            }
         });
     </script>
 </body>
