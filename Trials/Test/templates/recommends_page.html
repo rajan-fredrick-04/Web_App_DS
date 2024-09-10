@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feelix-inspired Recommendations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #252525;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .search-bar {
+            padding: 8px;
+            border-radius: 20px;
+            border: none;
+            background-color: #3a3a3a;
+            color: #ffffff;
+            width: 200px;
+            margin-bottom: 10px;
+        }
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #555;
+            margin-left: 10px;
+        }
+        .recommendations {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .recommendation-item {
+            width: 300px;
+            background-color: #252525;
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .recommendation-info {
+            margin-top: 10px;
+        }
+        .recommendation-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        iframe {
+            width: 100%;
+            height: 180px;
+            border: none;
+        }
+        .spotify-track, .quote-text {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo-container">
+                <img src="../static/images/LOGO.png" style="width: 80px; height: 80px;" alt="">
+                <span class="logo-text">Feelix</span>
+            </div>
+            <div class="nav-item" id="home-btn">Home</div>
+            <div class="nav-item" id="library-btn">Library</div>
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <div>
+                    <input type="text" class="search-bar" placeholder="Search">
+                </div>
+                <div class="profile-pic"></div>
+            </div>
+
+            <h1>Recommendations for '{{ detected_emotion | capitalize }}'</h1>
+
+            <!-- YouTube Videos Section -->
+            <h2>Recommended Videos</h2>
+            <div class="recommendations">
+                {% for video in youtube_videos %}
+                <div class="recommendation-item">
+                    <iframe src="https://www.youtube.com/embed/{{ video['video_id'] }}" allowfullscreen></iframe>
+                    <div class="recommendation-info">
+                        <div class="recommendation-title">{{ video['title'] }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Spotify Tracks Section -->
+            <h2>Recommended Music</h2>
+            <div class="recommendations">
+                {% for track in spotify_tracks %}
+                <div class="recommendation-item">
+                    <iframe src="https://open.spotify.com/embed/track/{{ track['track_id'] }}" allow="encrypted-media"></iframe>
+                    <div class="recommendation-info">
+                        <div class="recommendation-title">{{ track['title'] }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Quotes Section -->
+            <h2>Inspiring Quotes</h2>
+            <div class="recommendations">
+                {% for quote in quotes %}
+                <div class="recommendation-item">
+                    <div class="recommendation-info">
+                        <div class="quote-text">"{{ quote['text'] }}"</div>
+                        <div class="recommendation-category">- {{ quote['author'] }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('home-btn').addEventListener('click', () => {
+            alert('Home button clicked');
+        });
+
+        document.getElementById('library-btn').addEventListener('click', () => {
+            alert('Library button clicked');
+        });
+    </script>
+</body>
+</html>

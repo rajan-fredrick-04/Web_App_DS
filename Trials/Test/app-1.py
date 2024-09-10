@@ -14,6 +14,8 @@ from utils.emotion_analysis import predict_emotion, dynamic_weighted_average_emo
 from utils.auth_utils import register_user, login_user,forgot_pwd,verify,reset_pwd
 from utils.profile_utils import fetch_data
 from utils.feedback_util import update_feedback
+from utils.recommendation_utils import emotion_keywords, emotion_genres_music, emotion_tags_quotes, get_videos_by_keyword, get_songs_by_genre, get_quotes_by_tag
+
 
 load_dotenv()
 
@@ -98,7 +100,34 @@ def predict():
 
 @app.route("/recommendation")
 def recommendation():
-    return render_template('1_recommends_page.html')
+    if 'user_id' in session:
+        user_id = session['user_id']  
+
+        detected_emotion = request.args.get('emotion', 'neutral') 
+
+        # Get YouTube videos based on the detected emotion
+        video_keyword = emotion_keywords.get(detected_emotion, 'inspiring talks')
+        youtube_videos = get_videos_by_keyword(video_keyword)
+
+        # Get Spotify songs based on the detected emotion
+        genre = emotion_genres_music.get(detected_emotion, 'chill')
+        spotify_tracks = get_songs_by_genre(genre)
+
+        # Get quotes based on the detected emotion
+        quote_tag = emotion_tags_quotes.get(detected_emotion, 'life')
+        quotes = get_quotes_by_tag(quote_tag)
+
+        # Render the recommendations page with the data
+        return render_template('recommends_page.html', 
+                               youtube_videos=youtube_videos, 
+                               spotify_tracks=spotify_tracks,
+                               quotes=quotes,
+                               user=user_id,
+                               detected_emotion=detected_emotion)  # Pass emotion to template for display
+
+    else:
+        flash('Please log in to view recommendations', 'warning')
+        return redirect(url_for('login'))
 
 @app.route("/profile_view")
 def profile_view():
