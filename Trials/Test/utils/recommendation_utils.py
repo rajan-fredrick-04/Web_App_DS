@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from googleapiclient.discovery import build
 from spotipy.oauth2 import SpotifyOAuth  
 import isodate
-
+from utils.db_utils import *
 # Load environment variables
 load_dotenv()
 

@@ -130,6 +130,11 @@
                 flex-wrap: wrap;
             }
         }
+        a:visited 
+{
+    text-decoration: none;
+    color: #fff;
+}
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
 </head>
@@ -169,8 +174,8 @@
             {% endwith %}
                
                 <button type="submit">Submit</button>
-                <p style="display: inline-block;"><a href="{{ url_for('forgot_password') }}">Forgot Password ?</a></p>
-                <p style="display: inline-block; text-align: center;"><a href="{{ url_for('forgot_password') }}">New User..... Register Here!!</a></p>
+                <p style="display: inline-block;text-align: center;""><a  href="{{ url_for('forgot_password') }}">Forgot Password ?</a></p>
+                <p style="display: inline-block; text-align: center;"><a href="{{ url_for('register') }}">New User..... Register Here!!</a></p>
             </form>
         </div>
     </div>

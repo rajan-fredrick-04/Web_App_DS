@@ -15,6 +15,7 @@ from utils.auth_utils import register_user, login_user,forgot_pwd,verify,reset_p
 from utils.profile_utils import fetch_data,update_profile
 from utils.feedback_util import update_feedback
 from utils.recommendation_utils import *
+from io import BytesIO
 
 
 load_dotenv()
@@ -109,6 +110,10 @@ def recommendation():
     if 'user_id' in session:
         user_id = session['user_id']  
 
+        conn,cursor=create_connection()
+        cursor.execute('''SELECT profile_image FROM public."User_log" WHERE user_id = %s''', (user_id,))
+        u_image = cursor.fetchone()
+
         detected_emotion = request.args.get('emotion', 'neutral') 
 
         # Get YouTube videos based on the detected emotion
@@ -123,7 +128,9 @@ def recommendation():
         quote_tag = emotion_tags_quotes.get(detected_emotion, 'life')
         quotes = get_quotes_by_tag(quote_tag)
 
-
+        user_image_base64 = None
+        if u_image:
+            user_image_base64 = base64.b64encode(u_image[0]).decode('utf-8')
 
         # Render the recommendations page with the data
         return render_template('recommends_page.html', 
@@ -131,6 +138,7 @@ def recommendation():
                                spotify_tracks=spotify_tracks,
                                quotes=quotes,
                                user=user_id,
+                               user_image=user_image_base64,
                                detected_emotion=detected_emotion)  # Pass emotion to template for display
 
     else:
@@ -158,7 +166,7 @@ def logout():
     else:
         flash('You are not logged in.', 'warning')
     
-    return redirect(url_for('/'))
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
