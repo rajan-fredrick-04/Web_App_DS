@@ -14,7 +14,7 @@ from utils.emotion_analysis import predict_emotion, dynamic_weighted_average_emo
 from utils.auth_utils import register_user, login_user,forgot_pwd,verify,reset_pwd
 from utils.profile_utils import fetch_data
 from utils.feedback_util import update_feedback
-from utils.recommendation_utils import emotion_keywords, emotion_genres_music, emotion_tags_quotes, get_videos_by_keyword, get_songs_by_genre, get_quotes_by_tag
+from utils.recommendation_utils import *
 
 
 load_dotenv()
@@ -107,7 +107,7 @@ def recommendation():
 
         # Get YouTube videos based on the detected emotion
         video_keyword = emotion_keywords.get(detected_emotion, 'inspiring talks')
-        youtube_videos = get_videos_by_keyword(video_keyword)
+        youtube_videos = youtube_search(apikey,video_keyword)
 
         # Get Spotify songs based on the detected emotion
         genre = emotion_genres_music.get(detected_emotion, 'chill')
@@ -116,6 +116,8 @@ def recommendation():
         # Get quotes based on the detected emotion
         quote_tag = emotion_tags_quotes.get(detected_emotion, 'life')
         quotes = get_quotes_by_tag(quote_tag)
+
+
 
         # Render the recommendations page with the data
         return render_template('recommends_page.html', 

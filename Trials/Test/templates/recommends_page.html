@@ -121,14 +121,22 @@
             <!-- YouTube Videos Section -->
             <h2>Recommended Videos</h2>
             <div class="recommendations">
-                {% for video in youtube_videos %}
-                <div class="recommendation-item">
-                    <iframe src="https://www.youtube.com/embed/{{ video['video_id'] }}" allowfullscreen></iframe>
-                    <div class="recommendation-info">
-                        <div class="recommendation-title">{{ video['title'] }}</div>
-                    </div>
-                </div>
-                {% endfor %}
+                 {% if youtube_videos %}
+        <h2>Search Results</h2>
+        <ul>
+            {% for video in youtube_videos %}
+                <li>
+                    <h3>{{ video.title }}</h3>
+                    <iframe title="video" width="560" height="315" 
+                    src="https://www.youtube.com/embed/{{ video.video_id }}" 
+                    frameborder="0" allowfullscreen></iframe>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No videos found.</p>
+    {% endif %}
+               
             </div>
 
             <!-- Spotify Tracks Section -->
