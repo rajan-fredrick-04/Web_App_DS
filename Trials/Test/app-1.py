@@ -32,6 +32,12 @@ if not camera.isOpened():
 # def video():
 #     return Response(generate_frames(camera), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     return register_user(request)  # Call the function from auth_utils.py
@@ -143,6 +149,16 @@ def profile_edit():
 @app.route("/feedback", methods=['GET','POST'])
 def feedback():
     return update_feedback()
+
+@app.route('/logout')
+def logout():
+    if 'user_id' in session:
+        session.clear()
+        flash('You have been logged out successfully.', 'success')
+    else:
+        flash('You are not logged in.', 'warning')
+    
+    return redirect(url_for('/'))
 
 
 if __name__ == '__main__':

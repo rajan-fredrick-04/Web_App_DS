@@ -3,34 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emotion Detection</title>
-</head>
-<style>
-      .container {
+    <title>Feelix - Home</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            color: #fff;
+            background-color: #000;
+            overflow-x: hidden;
+        }
+
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        #bg-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.6);
+        }
+
+        header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
+            padding: 20px;
+            background:none;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
         }
-        .emotion {
-            margin-left: 20px;
+
+        header:hover {
+            background: rgba(0, 0, 0, 0.9);
         }
-</style>
+
+        .logo img {
+            height: 80px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .logo img:hover {
+            transform: scale(1.1);
+        }
+
+        .login-btn a {
+            color: #000;
+            background-color: #FFC107;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-btn a:hover {
+            background-color: #fff;
+            color: #000;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+        .decorative-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .decorative-element {
+            position: absolute;
+            opacity: 0.5;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .element-1 { top: 20%; left: 5%; font-size: 3rem; }
+        .element-2 { top: 30%; right: 10%; font-size: 2.5rem; }
+        .element-3 { bottom: 15%; left: 15%; font-size: 4rem; }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .about-us {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100vh;
+            padding: 40px;
+            color: #FFC107;
+        }
+
+        .about-us-content {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 800px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+        }
+
+        .about-us h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .about-us p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 2rem 0;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-icons a {
+            color: #FFC107;
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #fff;
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .about-us h1 {
+                font-size: 2.5rem;
+            }
+
+            .about-us p {
+                font-size: 1rem;
+            }
+
+            .social-icons {
+                gap: 1rem;
+            }
+
+            .social-icons a {
+                font-size: 1.5rem;
+            }
+
+            
+            .element-1, .element-2, .element-3 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
 <body>
-    <h1>Live Emotion Detection</h1>
-    <div class="container">
-        <img src="{{ url_for('video') }}" width="640" height="480" alt="Video Stream">
-        <h1 id="emotion" class="emotion"></h1>
+    <div class="video-container">
+        <video autoplay muted loop id="bg-video">
+            <source src="../static/bg_video3.mp4" type="video/mp4">
+            Your browser does not support HTML5 video.
+        </video>
     </div>
 
+    <header>
+        <div class="logo">
+            <img src="../static/images/LOGO.png" alt="Feelix Logo">
+        </div>
+        <div class="login-btn">
+            <a href="{{url_for('login')}}">Login</a>
+        </div>
+    </header>
+
+    
+    <div class="decorative-elements">
+        <div class="decorative-element element-1">😊</div>
+        <div class="decorative-element element-2">💡</div>
+        <div class="decorative-element element-3">🎵</div>
+    </div>
+
+    <section class="about-us">
+        <div class="about-us-content">
+            <h1>Welcome to Feelix</h1>
+            <p>Feelix is your personal emotion companion. By analyzing your facial expressions and textual inputs, Feelix understands your emotions and offers personalized recommendations, such as music, videos, and articles, to uplift your mood. Whether you're happy, sad, or stressed, Feelix is here to understand you better and provide the right content at the right time.</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-whatsapp"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fas fa-print"></i></a>
+        </div>
+        <div class="copyright">
+            Copyright © 2024 BeyondBorders Banking Corporation
+        </div>
+    </footer>
+
     <script>
-        const emotionElement = document.getElementById('emotion');
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const header = document.querySelector('header');
+            const aboutUs = document.querySelector('.about-us-content');
 
-        async function fetchEmotion() {
-            const response = await fetch('/get_emotion');
-            const data = await response.json();
-            emotionElement.textContent = data.emotion;
-        }
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.style.background = 'rgba(0, 0, 0, 0.9)';
+                } else {
+                    header.style.background = 'rgba(0, 0, 0, 0.7)';
+                }
+            });
 
-        setInterval(fetchEmotion, 1000); 
+            aboutUs.style.opacity = '0';
+            setTimeout(() => {
+                aboutUs.style.transition = 'opacity 1s ease-out';
+                aboutUs.style.opacity = '1';
+            }, 500);
+        });
     </script>
 </body>
 </html>
