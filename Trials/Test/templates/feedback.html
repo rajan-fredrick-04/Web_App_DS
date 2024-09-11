@@ -421,11 +421,6 @@
             </div>
             <button type="submit">Submit Feedback</button>
         </form>
-        
-        <div id="feedbackSent" class="feedback-sent">
-            Thank you for your feedback! Redirecting...
-        </div>
-
         {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
             <ul class="flashes">
@@ -436,7 +431,6 @@
         {% endif %}
         {% endwith %}
     </div>
-
     <footer>
         <div class="social-icons">
             <a href="#"><i class="fab fa-whatsapp"></i></a>

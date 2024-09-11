@@ -21,7 +21,10 @@ QUOTABLE_BASE_URL = 'https://api.api-ninjas.com/v1/quotes'
 def get_songs_by_genre(genre):
     results = sp.search(q='genre:' + genre, type='track', limit=5)
     tracks = results['tracks']['items']
-    return tracks
+    
+    track_info = [{'id': track['id'], 'name': track['name']} for track in tracks]
+    
+    return track_info
 
 # Function to get quotes by tag
 def get_quotes_by_tag(tag):
@@ -35,3 +38,6 @@ def get_quotes_by_tag(tag):
     else:
         print(f"Error: {response.status_code}")
         return []
+    
+res=get_songs_by_genre("happy")
+print(res)

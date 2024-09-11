@@ -21,8 +21,6 @@
             background-color: #252525;
             padding: 20px;
             display: flex;
-            position: relative;
-            height: 1000%;
             flex-direction: column;
             align-items: flex-start;
         }
@@ -199,17 +197,15 @@
     background-color: #2e7d32; /* Darker green when clicked */
     transform: scale(0.95); /* Slight shrink effect */
 }
-
     </style>
 </head>
 <body>
     <div class="container">
         <div class="sidebar">
             <div class="logo-container">
-                <img src="LOGO.png" style="width: 80px; height: 80px;" alt="">
+                <img src="../static/images/LOGO.png" style="width: 80px; height: 80px;" alt="">
                 <span class="logo-text">Feelix</span>
             </div>
-            
             <div class="section-title">Menu</div>
             <div class="nav-item" id="home-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
@@ -240,15 +236,16 @@
                 Settings
             </div>
         </div>
+        </div>
         <div class="main-content">
             <div class="header">
                 <div>
                     <input type="text" class="search-bar" placeholder="Search">
                 </div>
-                <button class="logout-btn" id="logout-btn">
+                <button class="logout-btn" id="logout-btn"></button>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                     Logout
-                </button>
+         </button>
                 <div class="profile-pic"></div>
             </div>
 
@@ -265,10 +262,6 @@
                 frameborder="0" allowfullscreen></iframe>
                 <div class="recommendation-info">
                     <div class="recommendation-title">{{ video.title }}</div>
-                    <div>
-                        <button class="like-btn" onclick="likeContent('video', '{{ video.video_id }}')">Like</button>
-                        <button class="playlist-btn" onclick="addToPlaylist('video', '{{ video.video_id }}')">Add to Playlist</button>
-                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -276,6 +269,7 @@
             <p>No videos found.</p>
             {% endif %}
             </div>
+
 
             <!-- Spotify Tracks Section -->
             <h2>Recommended Music</h2>
@@ -287,13 +281,9 @@
                     frameborder="0" 
                     allowtransparency="true" 
                     allow="encrypted-media">
-                    </iframe>
+            </iframe>
                     <div class="recommendation-info">
                         <div class="recommendation-title">{{ track.name }}</div>
-                        <div>
-                            <button class="like-btn" onclick="likeContent('track', '{{ track.id }}')">Like</button>
-                            <button class="playlist-btn" onclick="addToPlaylist('track', '{{ track.id }}')">Add to Playlist</button>
-                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -307,10 +297,6 @@
                     <div class="recommendation-info">
                         <div class="quote-text">"{{ quote['text'] }}"</div>
                         <div class="recommendation-category">- {{ quote['author'] }}</div>
-                        <div>
-                            <button class="like-btn" onclick="likeContent('quote', '{{ loop.index }}')">Like</button>
-                            <button class="playlist-btn" onclick="addToPlaylist('quote', '{{ loop.index }}')">Add to Playlist</button>
-                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -319,43 +305,7 @@
     </div>
 
     <script>
-        document.getElementById('home-btn').addEventListener('click', () => {
-            alert('Home button clicked');
-        });
-
-        document.getElementById('discover-btn').addEventListener('click', () => {
-            alert('Discover button clicked');
-        });
-
-        document.getElementById('playlists-btn').addEventListener('click', () => {
-            alert('Playlists button clicked');
-        });
-
-        document.getElementById('favorites-btn').addEventListener('click', () => {
-            alert('Favorites button clicked');
-        });
-
-        document.getElementById('profile-btn').addEventListener('click', () => {
-            alert('Profile button clicked');
-        });
-
-        document.getElementById('settings-btn').addEventListener('click', () => {
-            alert('Settings button clicked');
-        });
-
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            alert('Logout button clicked');
-        });
-
-        function likeContent(type, id) {
-            alert('Liked ' + type + ' with ID: ' + id);
-            // Implement like functionality here
-        }
-
-        function addToPlaylist(type, id) {
-            alert('Added ' + type + ' with ID: ' + id + ' to playlist');
-            // Implement add to playlist functionality here
-        }
+      
     </script>
 </body>
 </html>

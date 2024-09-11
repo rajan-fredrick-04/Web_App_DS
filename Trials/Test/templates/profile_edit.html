@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FEELIX Editable User Profile</title>
+    <title>FEELIX Update Profile</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
@@ -27,6 +27,7 @@
 
         .container {
             max-width: 1000px;
+            height: 400px;
             margin: 0 auto;
             padding: 40px 20px;
             position: relative;
@@ -142,30 +143,30 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 120%;
             object-fit: cover;
             z-index: -1;
             transition: 20s;
         }
         
-        .edit-mode input[type="text"],
-        .edit-mode input[type="email"],
-        .edit-mode input[type="number"],
-        .edit-mode select,
-        .edit-mode textarea {
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        select,
+        textarea {
             width: 100%;
             padding: 8px;
             margin-bottom: 10px;
             background-color: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--primary-color);
             border-radius: 5px;
-            color: var(--text-color);
+            color: white;
             font-family: 'Poppins', sans-serif;
         }
 
         .button-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             margin-top: 20px;
         }
 
@@ -203,10 +204,47 @@
         option{
             color: #121212;
         }
+        
+        .preferences-dropdown {
+            position: relative;
+        }
+        
+        .preferences-dropdown select {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        select,
+        textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        background-color: rgba(255, 255, 255,0.1);
+        border: 1px solid var(--primary-color);
+        border-radius: 5px;
+        color: white;
+        font-family: 'Poppins', sans-serif;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255, 255, 255); /* White with transparency */
+        }
+       
+
     </style>
 </head>
 <body>
-    <video id="bg-video" autoplay muted loop>
+   <video id="bg-video" autoplay muted loop>
         <source src="../static/bg_video3.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
@@ -214,64 +252,92 @@
         <div class="profile-card">
             <div class="profile-header">
                 <div class="profile-pic">
-                    {% if image_base64 %}
-                 <img src="data:image/jpeg;base64,{{ image_base64 }}" alt="Profile Image">
-                {% else %}
-                <p>No profile image available.</p>
-                {% endif %}
+                    <img src="/api/placeholder/150/150" alt="Profile Picture" id="profile-image">
                 </div>
-                <h1 class="profile-name" id="username-display">{{ name }}</h1>
-                <p class="profile-info" id="age-gender-display">{{ age }} years old • {{ gender }}</p>
+                <h1 class="profile-name">Update Your Profile</h1>
+                <p class="profile-info">Click on the image to update your profile picture</p>
             </div>
             <div class="profile-body">
+                <form method="POST"  action="/profile_edit" enctype="multipart/form-data">
                 <div class="section">
                     <h2 class="section-title">Personal Information</h2>
-                    <div id="personal-info">
-                        <p><strong>Email:</strong> <span id="email-display">{{ email }}</span></p>
-                        <p><strong>Age:</strong> <span id="age-display">{{ age }}</span></p>
-                        <p><strong>Gender:</strong> <span id="gender-display">{{ gender }}</span></p>
-                    </div>
+                    <input type="text" id="username-input" name="username" placeholder="Enter your name" >
+                    <input type="email" id="email-input" name="email" placeholder="Enter your email">
+                    <input type="number" id="age-input" name="age" placeholder="Enter your age">
+                    <select title="gen" id="gender-input">
+                        <option value="" disabled selected>Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
                 </div>
                 <div class="section">
                     <h2 class="section-title">Preferences</h2>
-                    <div class="preferences" id="preferences-display">
-                        {% for preference in preferences.split(',') %}
-                            <span class="preference">{{ preference }}</span>
-                        {% endfor %}
+                    <div class="preferences-checkboxes">
+                        <label>
+                            <input type="checkbox" name="preferences" value="Arts"> Arts
+                        </label><br>
+                        <label>
+                            <input type="checkbox" name="preferences" value="Sports"> Sports
+                        </label><br>
+                        <label>
+                            <input type="checkbox" name="preferences" value="Photography"> Photography
+                        </label><br>
+                        <label>
+                            <input type="checkbox" name="preferences" value="Travel"> Travel
+                        </label><br>
+                        <label>
+                            <input type="checkbox" name="preferences" value="Music"> Music
+                        </label><br>
+                        <label>
+                            <input type="checkbox" name="preferences" value="Cooking"> Cooking
+                        </label>
                     </div>
                 </div>
+                <div class="section">
+                    <h2 class="section-title">Profile Image</h2>
+                    <input title="pic" type="file" id="profile-pic-upload" name="user_image" accept="image/*">
+                </div>
                 <div class="button-container">
-                    <button class="btn" id="update-profile-btn" >Update Profile</button>
-                    <button class="btn" id="dashboard-btn">Dashboard</button>
-                    <button class="btn" id="feedback-btn">Feedback</button>
+                    <button class="btn" id="save-profile-btn">Save Profile</button>
                 </div>
             </div>
         </div>
     </div>
 
-
     <script>
         // Increase video speed by setting playbackRate
         const video = document.getElementById('bg-video');
-        video.playbackRate = 1.5; // This doubles the speed. Adjust the number as needed (1 = normal speed).
+        video.playbackRate = 1.5;
 
         document.addEventListener('DOMContentLoaded', () => {
-    const updateProfileBtn = document.getElementById('update-profile-btn');
-    const profileCard = document.querySelector('.profile-card');
-    const profilePicUpload = document.getElementById('profile-pic-upload');
+            const saveProfileBtn = document.getElementById('save-profile-btn');
+            const profilePicUpload = document.getElementById('profile-pic-upload');
 
-    updateProfileBtn.addEventListener('click', () => {
-        window.location.href = "{{ url_for('profile_edit') }}";
-    });
-    // Placeholder functions for Dashboard and Feedback buttons
-    document.getElementById('dashboard-btn').addEventListener('click', () => {
-        window.location.href = "{{ url_for('recommendation') }}";
-    });
+            saveProfileBtn.addEventListener('click', () => {
+                // Here you would typically send the data to a server
+                // For this example, we'll just log the values
+                console.log('Name:', document.getElementById('username-input').value);
+                console.log('Age:', document.getElementById('age-input').value);
+                console.log('Gender:', document.getElementById('gender-input').value);
+                console.log('Email:', document.getElementById('email-input').value);
+                console.log('Preferences:', Array.from(document.getElementById('preferences-input').selectedOptions).map(option => option.value));
+                console.log('Bio:', document.getElementById('bio-input').value);
+                
+                alert('Profile saved successfully!');
+            });
 
-    document.getElementById('feedback-btn').addEventListener('click', () => {
-        window.location.href = "{{ url_for('feedback') }}";
-    });
-});
+            profilePicUpload.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        document.getElementById('profile-image').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
     </script>
 </body>
 </html>

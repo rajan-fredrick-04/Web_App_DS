@@ -114,7 +114,10 @@ def youtube_search(api_key, query, max_results=5, initial_results=30):
 def get_songs_by_genre(genre):
     results = sp.search(q='genre:' + genre, type='track', limit=5)
     tracks = results['tracks']['items']
-    return tracks
+    
+    track_info = [{'id': track['id'], 'name': track['name']} for track in tracks]
+    
+    return track_info
 
 # Function to get quotes by tag
 def get_quotes_by_tag(tag):

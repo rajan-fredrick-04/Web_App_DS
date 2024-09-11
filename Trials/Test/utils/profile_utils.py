@@ -1,8 +1,18 @@
 from flask import render_template, flash, redirect, url_for,request,session,jsonify
 from psycopg2 import OperationalError
 from utils.db_utils import create_connection
+import psycopg2
+import base64
+import io
+
+# UPLOAD_FOLDER = 'path/to/uploaded/images'
+# ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
+
+# def allowed_file(filename):
+#     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def fetch_data():
+    user_name = user_email = user_age = user_gender = user_pref =user_image= None
     try:
         # Retrieve the user_id from session
         user_id = session.get('user_id')
@@ -15,12 +25,13 @@ def fetch_data():
         
         if conn and cursor:
             # Query to fetch user details using user_id from session
-            cursor.execute(''' SELECT username, email, age, gender, preferences 
+            cursor.execute(''' SELECT username, email, age, gender, preferences,profile_image
                                FROM public."User_log" WHERE user_id = %s''', (user_id,))
             result = cursor.fetchone()
 
             if result:
-                user_name, user_email, user_age, user_gender, user_pref = result
+                user_name, user_email, user_age, user_gender, user_pref ,user_image= result
+                
             else:
                 flash('No user data found.', 'warning')
                 return redirect(url_for("recommends"))
@@ -39,77 +50,39 @@ def fetch_data():
         if conn is not None:
             conn.close()
 
+    user_image_base64 = None
+    if user_image:
+        import base64
+        from io import BytesIO
+        user_image_base64 = base64.b64encode(user_image).decode('utf-8')
+
     return render_template("profile_view.html",
                            name=user_name,
                            email=user_email,
                            age=user_age,
                            gender=user_gender,
-                           preferences=user_pref)
-
-def update_profile():
-    email = "jane@gmail.com"  # Assume we are updating based on email for now
-    new_name = request.form.get('name')
-    new_age = request.form.get('age')
-    new_gender = request.form.get('gender')
-    new_pref = request.form.get('preferences')
-
-    try:
-        if request.method=="POST":
-            conn,cursor=create_connection()
-            if conn and cursor:
-                update_fields = []
-                params = []
-                if new_name:
-                    update_fields.append("username = %s")
-                    params.append(new_name)
-                if new_age:
-                    update_fields.append("age = %s")
-                    params.append(new_age)
-                if new_gender:
-                    update_fields.append("gender = %s")
-                    params.append(new_gender)
-                if new_pref:
-                    update_fields.append("preferences = %s")
-                    params.append(new_pref)
-
-                params.append(email)
-                query=(f'''UPDATE public."User_log" SET{",".join(update_fields)} WHERE email=%s''')
-                cursor.execute(query,tuple(params))
-                conn.commit()
-                flash('Profile updated successfully!', 'success')
-            else:
-                flash('No changes made to the profile.', 'info')
-
-    except OperationalError as e:
-        flash('Technical error occurred. Please try again later.', 'danger')
-        print(f"Database error: {e}")
-    finally:
-        if cursor is not None:
-            cursor.close()
-        if conn is not None:
-            conn.close()
-
-    return redirect(url_for("profile_view"))
+                           preferences=user_pref,
+                           image_base64=user_image_base64)
 
 
 def update_profile():
     if 'user_id' not in session:
-        flash('Not Logged in!!', 'error')
+        flash('Not logged in!', 'error')
         return redirect(url_for('login'))
 
-    user_id = session['user_id']  # Get the user_id from the session
-    data = request.get_json()  # Get the JSON data sent from the frontend
-    new_name = data.get('username')
-    new_age = data.get('age')
-    new_gender = data.get('gender')
-    new_pref = data.get('preferences')
-    new_bio = data.get('bio')  # Assuming you're adding bio to the database
-    
+    user_id = session['user_id']
+    new_name = request.form.get('username', '')
+    new_age = request.form.get('age', '')
+    new_gender = request.form.get('gender', '')
+    new_pref = request.form.getlist('preferences') 
+    new_image = request.files.get('user_image')
+
     try:
         conn, cursor = create_connection()
         if conn and cursor:
             update_fields = []
             params = []
+
             if new_name:
                 update_fields.append("username = %s")
                 params.append(new_name)
@@ -120,17 +93,27 @@ def update_profile():
                 update_fields.append("gender = %s")
                 params.append(new_gender)
             if new_pref:
+                # Join preferences into a single string
+                new_pref_str = ', '.join(new_pref)
                 update_fields.append("preferences = %s")
-                params.append(new_pref)
-            if new_bio:
-                update_fields.append("bio = %s")
-                params.append(new_bio)
+                params.append(new_pref_str)
+            
+            if new_image :
+                # Read the image file as bytes
+                image_bytes = new_image.read()
+                # Append image bytea data to params
+                update_fields.append("profile_image = %s")
+                params.append(image_bytes)
 
-            params.append(user_id)
-            query = f'''UPDATE public."User_log" SET {", ".join(update_fields)} WHERE user_id=%s'''
-            cursor.execute(query, tuple(params))
-            conn.commit()
-            flash('Profile updated successfully!', 'success')
+            if update_fields:
+                params.append(user_id)
+                query = f'''UPDATE public."User_log" SET {", ".join(update_fields)} WHERE user_id=%s'''
+                cursor.execute(query, tuple(params))
+                conn.commit()
+                flash('Profile updated successfully!', 'success')
+                return redirect(url_for('profile_view')) 
+            else:
+                flash('No changes made to the profile.', 'info')
         else:
             flash('No changes made to the profile.', 'info')
 
@@ -142,8 +125,7 @@ def update_profile():
         if conn:
             conn.close()
 
-    return redirect(url_for('profile_view'))
-
+    return render_template("profile_edit.html")
 
 
 

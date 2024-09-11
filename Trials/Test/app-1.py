@@ -12,7 +12,7 @@ from utils.camera_utils import generate_frames
 from utils.db_utils import create_connection
 from utils.emotion_analysis import predict_emotion, dynamic_weighted_average_emotion,analyze_image_emotion,analyze_text_emotion,save_emotion_data
 from utils.auth_utils import register_user, login_user,forgot_pwd,verify,reset_pwd
-from utils.profile_utils import fetch_data
+from utils.profile_utils import fetch_data,update_profile
 from utils.feedback_util import update_feedback
 from utils.recommendation_utils import *
 
@@ -135,6 +135,10 @@ def recommendation():
 def profile_view():
     return fetch_data()
 
+
+@app.route("/profile_edit", methods=['GET','POST'])
+def profile_edit():
+    return update_profile()
 
 @app.route("/feedback", methods=['GET','POST'])
 def feedback():
